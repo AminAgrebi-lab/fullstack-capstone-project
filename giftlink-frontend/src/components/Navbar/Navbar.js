@@ -31,6 +31,11 @@ export default function Navbar() {
             <Link className="nav-link" to="/app">Gifts</Link>
           </li>
 
+          {/* Search Page Link */}
+          <li className="nav-item">
+            <Link className="nav-link" to="/app/search">Search</Link>
+          </li>
+
           {/* Green Login Button with white text */}
           <li className="nav-item">
             <Link className="btn btn-success text-white px-3" to="/app/login">Login</Link>
