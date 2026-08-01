@@ -1,3 +1,8 @@
+/* 0. Global application background */
+body {
+  background-color: #f4f6f8 !important; /* Soft light grey background */
+}
+
 /* 1. Card borders and container styling */
 .product-card, .card {
   border: none !important;
