@@ -34,7 +34,13 @@ router.get('/:id', async (req, res) => {
         const id = req.params.id;
 
         // Task 3: Find a specific gift by ID using collection.findOne()
-        const gift = await collection.findOne({ id: id });
+        // البحث بالمعرف id كـ string أو مقارنته بالحقول الممكنة
+        const gift = await collection.findOne({ 
+            $or: [
+                { id: id },
+                { _id: id }
+            ]
+        });
 
         if (!gift) {
             return res.status(404).send('Gift not found');
@@ -52,9 +58,9 @@ router.post('/', async (req, res, next) => {
     try {
         const db = await connectToDatabase();
         const collection = db.collection("gifts");
-        const gift = await collection.insertOne(req.body);
+        const result = await collection.insertOne(req.body);
 
-        res.status(201).json(gift.ops[0]);
+        res.status(201).json({ _id: result.insertedId, ...req.body });
     } catch (e) {
         next(e);
     }

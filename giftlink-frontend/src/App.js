@@ -4,10 +4,11 @@ import MainPage from './components/MainPage/MainPage';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import DetailsPage from './components/DetailsPage/DetailsPage';
-import SearchPage from './components/SearchPage/SearchPage'; // إضافة استيراد SearchPage
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import SearchPage from './components/SearchPage/SearchPage';
 import Navbar from './components/Navbar/Navbar';
+
+// Task 6: Import Profile component
+import Profile from './components/Profile/Profile';
 
 function App() {
   return (
@@ -18,8 +19,11 @@ function App() {
         <Route path="/app" element={<MainPage />} />
         <Route path="/app/login" element={<LoginPage />} />
         <Route path="/app/register" element={<RegisterPage />} />
-        <Route path="/app/product/:productId" element={<DetailsPage />} />
-        <Route path="/app/search" element={<SearchPage />} /> {/* إضافة مسار صفحة البحث */}
+        <Route path="/app/product/:id" element={<DetailsPage />} />
+        <Route path="/app/search" element={<SearchPage />} />
+
+        {/* Task 6: Add Profile Route */}
+        <Route path="/app/profile" element={<Profile />} />
       </Routes>
     </>
   );

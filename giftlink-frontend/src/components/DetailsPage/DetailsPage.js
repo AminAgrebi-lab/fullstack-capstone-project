@@ -5,7 +5,8 @@ import './DetailsPage.css';
 
 function DetailsPage() {
     const navigate = useNavigate();
-    const { productId } = useParams();
+    // 💡 تعديل 1: استخدام id بدلاً من productId ليتطابق مع App.js
+    const { id } = useParams(); 
     const [gift, setGift] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,13 +16,14 @@ function DetailsPage() {
         if (!authenticationToken) {
             // Task 1: Check for authentication and redirect
             navigate('/app/login');
+            return; // 💡 تعديل 2: إضافة return لمنع طلب الـ API إذا لم يكن مسجلاً
         }
 
         // get the gift to be rendered on the details page
         const fetchGift = async () => {
             try {
                 // Task 2: Fetch gift details
-                const response = await fetch(`${urlConfig.backendUrl}/api/gifts/${productId}`);
+                const response = await fetch(`${urlConfig.backendUrl}/api/gifts/${id}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -34,13 +36,14 @@ function DetailsPage() {
             }
         };
 
-        fetchGift();
+        if (id) {
+            fetchGift();
+        }
 
         // Task 3: Scroll to top on component mount
         window.scrollTo(0, 0);
 
-    }, [productId, navigate]);
-
+    }, [id, navigate]);
 
     const handleBackClick = () => {
         // Task 4: Handle back click
@@ -70,7 +73,6 @@ function DetailsPage() {
             comment: "My family can use one. DM me if it is still available. Thank you!"
         }
     ];
-
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
