@@ -1,0 +1,10 @@
+curl --location 'http://localhost:3060/api/auth/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "firstName": "Lachlan",
+    "lastName": "Baker",
+    "email": "lachie@gmail.com",
+    "password": "lac123"
+}'
+
+{"email":"lachie@gmail.com"}
