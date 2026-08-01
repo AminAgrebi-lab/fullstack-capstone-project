@@ -43,10 +43,10 @@ function MainPage() {
 
     return (
         <div className="container mt-5">
-            <div className="row">
+            <div className="row d-flex align-items-stretch">
                 {gifts.map((gift) => (
-                    <div key={gift.id} className="col-md-4 mb-4">
-                        <div className="card product-card">
+                    <div key={gift.id} className="col-md-4 mb-4 d-flex align-items-stretch">
+                        <div className="card product-card h-100 w-100 d-flex flex-column">
 
                             {/* Task 4: Display gift image or placeholder */}
                             <div className="image-placeholder">
@@ -57,22 +57,26 @@ function MainPage() {
                                 )}
                             </div>
 
-                            <div className="card-body">
+                            <div className="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    {/* Task 5: Display gift name */}
+                                    <h5 className="card-title">{gift.name}</h5>
 
-                                {/* Task 5: Display gift name */}
-                                <h5 className="card-title">{gift.name}</h5>
+                                    <p className={`card-text ${getConditionClass(gift.condition)}`}>
+                                        {gift.condition}
+                                    </p>
+                                </div>
 
-                                <p className={`card-text ${getConditionClass(gift.condition)}`}>
-                                    {gift.condition}
-                                </p>
+                                <div className="date-added mt-auto">
+                                    {/* Task 6: Display formatted date */}
+                                    <p className="card-text mb-3">{formatDate(gift.date_added)}</p>
 
-                                {/* Task 6: Display formatted date */}
-                                <p className="card-text">{formatDate(gift.date_added)}</p>
-
-                                <button onClick={() => goToDetailsPage(gift.id)} className="btn btn-primary">
-                                    View Details
-                                </button>
+                                    <button onClick={() => goToDetailsPage(gift.id)} className="btn btn-primary w-100">
+                                        View Details
+                                    </button>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 ))}

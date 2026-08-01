@@ -10,6 +10,9 @@ import Navbar from './components/Navbar/Navbar';
 // Task 6: Import Profile component
 import Profile from './components/Profile/Profile';
 
+// Import CSS styles
+import './App.css';
+
 function App() {
   return (
     <>

@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import './LoginPage.css';
 
-// Task 1 (Step 1): Import urlConfig from `giftlink-frontend/src/config.js`
+// Task 1 (Step 1): Import urlConfig
 import { urlConfig } from '../../config';
 
-// Task 2 (Step 1): Import useAppContext `giftlink-frontend/context/AuthContext.js`
+// Task 2 (Step 1): Import useAppContext
 import { useAppContext } from '../../context/AuthContext';
 
-// Task 3 (Step 1): Import useNavigate from `react-router-dom` to handle navigation after successful registration.
+// Task 3 (Step 1): Import useNavigate
 import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // Task 4 (Step 1): Include a state for incorrect password.
+    // Task 4 (Step 1): State for incorrect password
     const [incorrect, setIncorrect] = useState('');
 
-    // Task 5 (Step 1): Create a local variable for `navigate`, `bearerToken` and `setIsLoggedIn`.
+    // Task 5 (Step 1): Create local variables for navigation and AuthContext
     const navigate = useNavigate();
     const bearerToken = sessionStorage.getItem('bearer-token');
-    const { setIsLoggedIn } = useAppContext();
+    
+    // 💡 تم إضافة setUserName هنا لتحديث اسم المستخدم في Context فور تسجيل الدخول
+    const { setIsLoggedIn, setUserName } = useAppContext();
 
-    // Task 6 (Step 1): If the bearerToken (or auth-token) has a value (user already logged in), navigate to MainPage
+    // Task 6 (Step 1): Redirect if user is already logged in
     useEffect(() => {
         if (sessionStorage.getItem('auth-token')) {
             navigate('/app');
@@ -32,46 +34,40 @@ function LoginPage() {
     const handleLogin = async () => {
         try {
             const res = await fetch(`${urlConfig.backendUrl}/api/auth/login`, {
-                // Task 7 (Step 1): Set method
                 method: 'POST',
-
-                // Task 8 (Step 1): Set headers
                 headers: {
                     'content-type': 'application/json',
                     'Authorization': bearerToken ? `Bearer ${bearerToken}` : '',
                 },
-
-                // Task 9 (Step 1): Set body to send user details
                 body: JSON.stringify({
                     email: email,
                     password: password,
                 }),
             });
 
-            // Task 1 (Step 2): Access data coming from fetch API
             const json = await res.json();
 
-            // Task 2 (Step 2) & Task 5 (Step 2): Check for authtoken and set details
             if (json.authtoken) {
-                // Task 2 (Step 2): Set user details in session storage
+                // تحديد الاسم القادم من الـ Backend مع حلول احتياطية
+                const nameToStore = json.userName || json.name || json.username || (json.userEmail ? json.userEmail.split('@')[0] : email.split('@')[0]);
+
+                // Task 2 (Step 2): Save details in sessionStorage
                 sessionStorage.setItem('auth-token', json.authtoken);
-                sessionStorage.setItem('name', json.userName);
-                sessionStorage.setItem('email', json.userEmail);
+                sessionStorage.setItem('name', nameToStore);
+                sessionStorage.setItem('email', json.userEmail || email);
 
-                // Task 3 (Step 2): Set the user's state to log in using `useAppContext`
+                // Task 3 (Step 2): Update Context states immediately
                 setIsLoggedIn(true);
+                setUserName(nameToStore); // 👈 يضمن ظهور الاسم فوراً في الـ Navbar
 
-                // Task 4 (Step 2): Navigate to the MainPage after logging in
+                // Task 4 (Step 2): Navigate to MainPage
                 navigate('/app');
             } else {
-                // Task 5 (Step 2): Clear input and set an error message if the password is incorrect
-                document.getElementById("email").value = "";
-                document.getElementById("password").value = "";
+                // Task 5 (Step 2): Clear inputs and show error
                 setEmail("");
                 setPassword("");
                 setIncorrect("Wrong password. Try again.");
 
-                // Clear out error message after 2 seconds
                 setTimeout(() => {
                     setIncorrect("");
                 }, 2000);
@@ -89,7 +85,7 @@ function LoginPage() {
                     <div className="login-card p-4 border rounded">
                         <h2 className="text-center mb-4 font-weight-bold">Login</h2>
 
-                        {/* First Name / Email */}
+                        {/* Email Input */}
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Email</label>
                             <input
@@ -102,7 +98,7 @@ function LoginPage() {
                             />
                         </div>
 
-                        {/* Password */}
+                        {/* Password Input */}
                         <div className="mb-4">
                             <label htmlFor="password" className="form-label">Password</label>
                             <input
@@ -114,7 +110,7 @@ function LoginPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
 
-                            {/* Task 6 (Step 2): Display an error message to the user */}
+                            {/* Error Message */}
                             <span style={{ color: 'red', height: '.5cm', display: 'block', fontStyle: 'italic', fontSize: '12px' }}>
                                 {incorrect}
                             </span>

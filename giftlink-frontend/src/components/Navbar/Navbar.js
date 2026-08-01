@@ -9,17 +9,17 @@ export default function Navbar() {
 
     useEffect(() => {
         const authTokenFromSession = sessionStorage.getItem('auth-token');
-        const nameFromSession = sessionStorage.getItem('name');
+        
+        
+        const nameFromSession = sessionStorage.getItem('name') || sessionStorage.getItem('username');
+        const emailFromSession = sessionStorage.getItem('email');
 
         if (authTokenFromSession) {
             setIsLoggedIn(true);
             if (nameFromSession) {
                 setUserName(nameFromSession);
-            } else {
-                const emailFromSession = sessionStorage.getItem('email');
-                if (emailFromSession) {
-                    setUserName(emailFromSession.split('@')[0]);
-                }
+            } else if (emailFromSession) {
+                setUserName(emailFromSession.split('@')[0]);
             }
         }
     }, [setIsLoggedIn, setUserName]);
@@ -27,14 +27,22 @@ export default function Navbar() {
     const handleLogout = () => {
         sessionStorage.removeItem('auth-token');
         sessionStorage.removeItem('name');
+        sessionStorage.removeItem('username');
         sessionStorage.removeItem('email');
         setIsLoggedIn(false);
+        setUserName('');
         navigate('/app');
     };
 
     const profileSection = () => {
         navigate('/app/profile');
     };
+
+    // جلب الاسم للعرض المباشر في حال كان الـ State فارغاً
+    const displayName = userName || 
+                        sessionStorage.getItem('name') || 
+                        sessionStorage.getItem('username') || 
+                        (sessionStorage.getItem('email') ? sessionStorage.getItem('email').split('@')[0] : '');
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light" id="navbar_container">
@@ -55,7 +63,6 @@ export default function Navbar() {
             <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul className="navbar-nav ms-auto align-items-center">
                     <li className="nav-item">
-                        {/* استخدام a href إذا كانت صفحة static HTML خارجية */}
                         <a className="nav-link nav-link-custom" href="/home.html">Home</a>
                     </li>
                     <li className="nav-item">
@@ -73,7 +80,7 @@ export default function Navbar() {
                                     style={{ cursor: "pointer" }} 
                                     onClick={profileSection}
                                 >
-                                    Welcome, {userName}
+                                    Welcome, {displayName}
                                 </span>
                             </li>
                             <li className="nav-item">
