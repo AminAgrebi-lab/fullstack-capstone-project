@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: giftfrontend
+  labels:
+    app: giftfrontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: giftfrontend
+  template:
+    metadata:
+      labels:
+        app: giftfrontend
+    spec:
+      imagePullSecrets:
+        - name: icr
+      containers:
+        - name: giftfrontend-container
+          image: us.icr.io/sn-labs-amynalqrby4/giftfrontend
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: giftfrontend-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: giftfrontend
